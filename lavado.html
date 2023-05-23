@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Lavado</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <style>
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .form-group label {
+      font-weight: bold;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: 1px solid #ced4da;
+    }
+    .btn-primary {
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h2>Formulario de Lavado</h2>
+    <form id="lavado-form">
+      <div class="form-group">
+        <label for="clase">Clase:</label>
+        <select class="form-control" id="clase" required>
+          <option value="alto">Alto</option>
+          <option value="bajo">Bajo</option>
+          <option value="mediano">Mediano</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="kilos">Kilos:</label>
+        <input type="number" class="form-control" id="kilos" required>
+      </div>
+      <div class="form-group">
+        <label for="precio">Precio:</label>
+        <input type="number" class="form-control" id="precio" required>
+      </div>
+      <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

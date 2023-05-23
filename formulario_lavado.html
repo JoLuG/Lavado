@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+  <title>Formulario de Lavado</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <style>
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .form-group label {
+      font-weight: bold;
+    }
+    .form-group input {
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+      border-radius: 4px;
+      border: 1px solid #ced4da;
+    }
+    .btn-primary {
+      margin-top: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container mt-5">
+    <h2>Formulario de Lavado</h2>
+    <form id="lavado-form">
+      <div class="form-group">
+        <label for="clase">Clase:</label>
+        <select class="form-control" id="clase" required>
+          <option value="alto">Alto</option>
+          <option value="bajo">Bajo</option>
+          <option value="mediano">Mediano</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="kilos">Kilos:</label>
+        <input type="number" class="form-control" id="kilos" required>
+      </div>
+      <div class="form-group">
+        <label for="precio">Precio:</label>
+        <input type="number" class="form-control" id="precio" readonly required>
+      </div>
+      <div class="form-group">
+        <label for="total">Total:</label>
+        <input type="number" class="form-control" id="total" readonly required>
+      </div>
+      <button type="submit" class="btn btn-primary">Guardar</button>
+    </form>
+    <a href="cerrar_sesion.php" class="btn btn-link mt-3">Cerrar Sesión</a>
+  </div>
+
+  <script>
+    $(document).ready(function() {
+      // Función para calcular el total
+      function calcularTotal() {
+        var kilos = parseFloat($('#kilos').val());
+        var precio = parseFloat($('#precio').val());
+        var total = kilos * precio;
+        $('#total').val(total.toFixed(2));
+      }
+
+      // Calcular el precio automáticamente al cargar la página
+      var claseSeleccionada = $('#clase').val();
+      if (claseSeleccionada === 'alto') {
+        $('#precio').val('10.00');
+      } else if (claseSeleccionada === 'bajo') {
+        $('#precio').val('8.00');
+      } else if (claseSeleccionada === 'mediano') {
+        $('#precio').val('9.00');
+      }
+
+      calcularTotal();
+
+      // Manejar el cambio en la selección de clase
+      $('#clase').change(function() {
+        var clase = $(this).val();
+
+        // Establecer el precio según la clase seleccionada
+        if (clase === 'alto') {
+          $('#precio').val('10.00');
+        } else if (clase === 'bajo') {
+          $('#precio').val('8.00');
+        } else if (clase === 'mediano') {
+          $('#precio').val('9.00');
+        }
+
+        calcularTotal();
+      });
+
+      // Manejar el cambio en la cantidad de kilos
+      $('#kilos').keyup(function() {
+        calcularTotal();
+      });
+
+      // Manejar el envío del formulario
+      $('#lavado-form').submit(function(e) {
+        e.preventDefault();
+
+        // Obtener los valores del formulario
+        var clase = $('#clase').val();
+        var kilos = $('#kilos').val();
+        var precio = $('#precio').val();
+        var total = $('#total').val();
+
+        // Realizar una solicitud AJAX para guardar los datos en la base de datos
+        $.ajax({
+          url: 'guardar_lavado.php',
+          method: 'POST',
+          data: {
+            clase: clase,
+            kilos: kilos,
+            precio: precio,
+            total: total
+          },
+          success: function(response) {
+            // Redirigir a la página de impresión del ticket si la respuesta es "success"
+            if (response === 'Success') {
+              window.location.href = 'ticket.php';
+            } else {
+              // Mostrar el mensaje de error en caso contrario
+              alert('Error al guardar el lavado. Inténtalo de nuevo.');
+              console.log(response); // Imprimir la respuesta en la consola del navegador
+            }
+          },
+          error: function(xhr, status, error) {
+            // Mostrar un mensaje de error genérico en caso de error de AJAX
+            alert('Error al guardar el lavado. Inténtalo de nuevo.');
+            console.log(error); // Imprimir el mensaje de error en la consola del navegador
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
